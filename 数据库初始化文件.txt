@@ -1,0 +1,23 @@
+create database if not exists ds;
+
+use ds;
+
+DROP TABLE IF EXISTS `client`;
+
+CREATE TABLE IF NOT EXISTS `client`(
+                                       `ip` VARCHAR(40) NOT NULL,
+                                       `hostname` VARCHAR(40) NOT NULL,
+                                       `os` VARCHAR(40) NOT NULL,
+
+                                       `memory_usage` DOUBLE NOT NULL,
+                                       `cpu_usage` DOUBLE NOT NULL,
+                                       `hard_disk_usage` DOUBLE NOT NULL,
+
+                                       `processors` INT NOT NULL,
+                                       `network_delay` long NOT NULL,
+
+
+                                       `start_time` DATETIME NOT NULL,
+                                       `last_time` DATETIME NOT NULL,
+                                       PRIMARY KEY ( `hostname` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8

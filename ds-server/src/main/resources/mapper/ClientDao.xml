@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.dsserver.dao.ClientDao">
+
+    <insert id="insertOrUpdateClientMsg" parameterType="com.example.dsgeneral.data.ClientMes">
+        insert into ClientMes (host,last_time,os_name)
+        values (#{host},#{time},#{osName})
+        ON DUPLICATE KEY UPDATE
+        last_time=VALUES(last_time),
+        os_name=VALUES(os_name)
+    </insert>
+
+    <insert id="insertOrUpdateCpu" parameterType="com.example.dsgeneral.data.Cpu">
+        insert into Cpu (host, phy_count,log_count,user_per,nice_per,sys_per,
+                         idle_per,iowait_per,irq_per,soft_per,steal_per)
+        values (#{host},#{phyProCount},#{logProCount},#{userper},#{niceper},
+                #{sysper},#{idleper},#{iowaitper},#{irqper},#{softirqper},#{stealper})
+        ON DUPLICATE KEY UPDATE
+        phy_count=VALUES(phy_count),
+        log_count=VALUES(log_count),
+        user_per=VALUES(user_per),
+        nice_per=VALUES(nice_per),
+        sys_per=VALUES(sys_per),
+        idle_per=VALUES(idle_per),
+        iowait_per=VALUES(iowait_per),
+        irq_per=VALUES(irq_per),
+        soft_per=VALUES(soft_per),
+        steal_per=VALUES(steal_per)
+    </insert>
+    <insert id="insertOrUpdateMeo" parameterType="com.example.dsgeneral.data.Meo">
+        insert into Meo (host, phy_available,vir_inuse)
+        values (#{host},#{available},#{virInuse})
+        ON DUPLICATE KEY UPDATE
+        phy_available=VALUES(phy_available),
+        vir_inuse=VALUES(vir_inuse)
+    </insert>
+    <insert id="insertOrUpdateNet" parameterType="com.example.dsgeneral.data.NetWork">
+        insert into NetWork (host, net_name,mac_add,byt_rec,byt_sen,pac_rec,pac_sen,speed,indrops)
+        values (#{host},#{name},#{macaddr},#{bytesRecv},
+                #{bytesSent},#{packetsRecv},#{packetsSent},#{speed},#{inDrops})
+        ON DUPLICATE KEY UPDATE
+        net_name=VALUES(net_name),
+        mac_add=VALUES(mac_add),
+        byt_rec=VALUES(byt_rec),
+        byt_sen=VALUES(byt_sen),
+        pac_rec=VALUES(pac_rec),
+        pac_sen=VALUES(pac_sen),
+        speed=VALUES(speed),
+        indrops=VALUES(indrops)
+    </insert>
+    <insert id="insertOrUpdateDiskMsg" parameterType="java.util.List">
+        insert into DiskMsg
+        (host,disk_name,model,disk_size,readed,writed,count)
+        values
+        <foreach collection="list" item="item"  separator=",">
+            (#{item.host},#{item.name},#{item.model},#{item.size},#{item.readed},#{item.writed},#{item.count})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        disk_name=VALUES(disk_name),
+        model=VALUES(model),
+        disk_size=VALUES(disk_size),
+        readed=VALUES(readed),
+        writed=VALUES(writed)
+    </insert>
+
+    <insert id="insertOrUpdateFileMsg" parameterType="java.util.List">
+        insert into FileMsg
+        (host,dir_name,total_size,free_size,usage_size,count)
+        values
+        <foreach collection="list" item="item"  separator=",">
+            (#{item.host},#{item.dirName},#{item.total},#{item.free},#{item.usage},#{item.count})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        dir_name=VALUES(dir_name),
+        total_size=VALUES(total_size),
+        free_size=VALUES(free_size),
+        usage_size=VALUES(usage_size)
+    </insert>
+
+    <delete id="deleteAll" >
+        delete from ClientMes
+
+--         {call
+--             declare
+--             begin
+--             delete from ClientMes;
+--             delete from Cpu;
+--             delete from Meo;
+--             delete from NetWork;
+--             delete from DiskMsg;
+--             delete from FileMsg;
+--             end
+--             }
+    </delete>
+
+</mapper>

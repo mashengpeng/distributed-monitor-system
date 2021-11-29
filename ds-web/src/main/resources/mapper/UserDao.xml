@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.dsweb.dao.UserDao">
+
+    <select id="findUserByName"  resultType="com.example.dsgeneral.data.User">
+        SELECT user_name as username,
+               password as pwd
+        FROM `User`
+        where user_name=#{name}
+    </select>
+    <insert id="insertUser" parameterType="com.example.dsgeneral.data.User">
+        INSERT INTO User(user_name,password)
+        VALUES
+            (#{username},
+             #{pwd}
+             )
+    </insert>
+
+    <update id="updateUser" parameterType="com.example.dsgeneral.data.User">
+        UPDATE `User`
+        <set>
+            <if test="pwd != null">`password`=#{pwd},</if>
+        </set>
+        WHERE user_name=#{username}
+    </update>
+
+    <delete id="deleteByName" parameterType="String">
+        delete from `User` where user_name = #{name}
+    </delete>
+</mapper>

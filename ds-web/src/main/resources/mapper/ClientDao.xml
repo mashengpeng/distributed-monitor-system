@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.dsweb.dao.ClientDao">
+    <select id="getTotalCount"  resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM ClientMes
+    </select>
+
+    <select id="findAllDataByLimit"
+            resultMap="vueTableMap">
+        SELECT
+        a.id,a.host,a.last_time,a.os_name,b.user_per,b.sys_per,
+        e.phy_available,e.vir_inuse,d.mac_add,d.byt_rec,d.byt_sen,d.speed
+        FROM ClientMes as a
+        left join Cpu as b on a.host = b.host
+        left join Meo e on a.host = e.host
+        left join Network d on a.host = d.host
+        order by id desc
+        limit #{currIndex},#{pageSize}
+    </select>
+    <select id="findTableDataByIp"
+            resultMap="vueTableMap">
+        SELECT
+            a.id,a.host,a.last_time,a.os_name,b.user_per,b.sys_per,
+            e.phy_available,e.vir_inuse,d.mac_add,d.byt_rec,d.byt_sen,d.speed
+        FROM ClientMes as a
+                 left join Cpu as b on a.host = b.host
+                 left join Meo e on a.host = e.host
+                 left join Network d on a.host = d.host
+        where a.host = #{ip}
+    </select>
+    <select id="findCpuByIp" resultType="com.example.dsgeneral.data.Cpu">
+        SELECT user_per as userper,sys_per as sysper,idle_per as idleper,iowait_per as iowaitper
+        FROM Cpu
+        where host = #{ip}
+    </select>
+    <select id="findMeoByIp" resultType="com.example.dsgeneral.data.Meo">
+        SELECT phy_available as  available,vir_inuse as virInuse
+        FROM Meo
+        where host = #{ip}
+    </select>
+    <select id="findNetByIp" resultType="com.example.dsgeneral.data.NetWork">
+        SELECT byt_rec as bytesRecv,byt_sen as bytesSent,pac_rec as packetsRecv,pac_sen as packetsSent,speed as speed
+        FROM NetWork
+        where host = #{ip}
+    </select>
+    <select id="findDiskMesByIp" resultType="com.example.dsgeneral.data.DiskMes">
+        SELECT disk_name as 'name',disk_size as 'size',readed as readed,writed as writed  FROM DiskMsg
+        where host = #{ip}
+    </select>
+    <select id="findFileMesByIp" resultType="com.example.dsgeneral.data.FileMes">
+        SELECT dir_name as dirName,total_size as total,free_size as free,usage_size as 'usage'
+        FROM FileMsg
+        where host = #{ip}
+    </select>
+    <!-- 结果集:1 -->
+    <resultMap id="vueTableMap" type="com.example.dsgeneral.data.VueTable">
+        <id property="id" column="id" />
+        <result property="host" column="host"/>
+        <result property="time" column="last_time"/>
+        <result property="osName" column="os_name"/>
+        <result property="macaddr" column="mac_add"/>
+        <result property="userper" column="user_per"/>
+        <result property="sysper" column="sys_per"/>
+        <result property="phyAvailable" column="phy_available"/>
+        <result property="virInuse" column="vir_inuse"/>
+        <result property="bytesRecv" column="byt_rec"/>
+        <result property="bytesSent" column="byt_sen"/>
+        <result property="speed" column="speed"/>
+    </resultMap>
+</mapper>
