@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.dsserver.dao.OfflineClientDao">
+
+    <insert id="insertOrUpdateOfflineMes" parameterType="com.example.dsgeneral.data.OfflineMes">
+        insert into OfflineMes (host,last_online_time,os_name)
+        values (#{host},#{lastOnlineTime},#{osName})
+            ON DUPLICATE KEY UPDATE
+                                last_online_time=VALUES(last_online_time),
+                                 os_name=VALUES(os_name)
+    </insert>
+
+    <delete id="deleteByHost" >
+        delete from OfflineMes where host = #{host}
+    </delete>
+
+</mapper>

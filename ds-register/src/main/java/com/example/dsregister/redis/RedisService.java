@@ -29,7 +29,7 @@ public class RedisService {
     }
 
     public void deleteAll() {
-        //redisTemplate.opsForValue().
+        redisTemplate.delete(Objects.requireNonNull(redisTemplate.keys("*")));
     }
 
 

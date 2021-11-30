@@ -12,6 +12,7 @@ import oshi.util.Util;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +42,7 @@ public class OshiUtil {
         ClientMes clientMes = new ClientMes();
         clientMes.setHost(getHostIp());
         clientMes.setOsName(props.getProperty("os.name"));
+        clientMes.setTime(LocalDateTime.now().toString());
         return clientMes;
     }
 
@@ -112,9 +114,9 @@ public class OshiUtil {
         long available = memory.getAvailable();
         long total = memory.getTotal();
         long inuse = memory.getVirtualMemory().getVirtualInUse();
-        System.out.println("inuse:"+inuse);
+        // System.out.println("inuse:"+inuse);
         long max = memory.getVirtualMemory().getVirtualMax();
-        System.out.println("VirtualMax:"+max);
+        // System.out.println("VirtualMax:"+max);
         DecimalFormat df = new DecimalFormat(".00");
         meo.setHost(getHostIp());
         meo.setAvailable(df.format(100d *available/total));

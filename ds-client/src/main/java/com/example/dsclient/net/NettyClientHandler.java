@@ -43,7 +43,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
             }
         };
         Timer timer = new Timer();
-        timer.schedule(timerTask, 0, 3000);
+        timer.schedule(timerTask, 0, 30000);
     }
 
     @Override

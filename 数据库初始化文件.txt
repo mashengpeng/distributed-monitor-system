@@ -1,23 +1,98 @@
+drop database if exists ds;
+
 create database if not exists ds;
 
 use ds;
 
-DROP TABLE IF EXISTS `client`;
+CREATE TABLE IF NOT EXISTS `ClientMes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `host` varchar(45) NOT NULL,
+  `last_time` varchar(45) DEFAULT NULL,
+  `os_name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `host_UNIQUE` (`host`)
+) ENGINE=InnoDB AUTO_INCREMENT=405 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
-CREATE TABLE IF NOT EXISTS `client`(
-                                       `ip` VARCHAR(40) NOT NULL,
-                                       `hostname` VARCHAR(40) NOT NULL,
-                                       `os` VARCHAR(40) NOT NULL,
+CREATE TABLE IF NOT EXISTS `OfflineMes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `host` varchar(45) NOT NULL,
+  `last_online_time` varchar(45) DEFAULT NULL,
+  `os_name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `host_UNIQUE` (`host`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
-                                       `memory_usage` DOUBLE NOT NULL,
-                                       `cpu_usage` DOUBLE NOT NULL,
-                                       `hard_disk_usage` DOUBLE NOT NULL,
+CREATE TABLE IF NOT EXISTS `Cpu` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `host` varchar(45) NOT NULL,
+  `phy_count` int DEFAULT NULL,
+  `log_count` int DEFAULT NULL,
+  `user_per` varchar(45) DEFAULT NULL,
+  `nice_per` varchar(45) DEFAULT NULL,
+  `sys_per` varchar(45) DEFAULT NULL,
+  `idle_per` varchar(45) DEFAULT NULL,
+  `iowait_per` varchar(45) DEFAULT NULL,
+  `irq_per` varchar(45) DEFAULT NULL,
+  `soft_per` varchar(45) DEFAULT NULL,
+  `steal_per` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `host_UNIQUE` (`host`)
+) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
-                                       `processors` INT NOT NULL,
-                                       `network_delay` long NOT NULL,
+CREATE TABLE IF NOT EXISTS `DiskMsg` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `host` varchar(45) NOT NULL,
+  `disk_name` varchar(45) DEFAULT NULL,
+  `model` varchar(100) DEFAULT NULL,
+  `disk_size` bigint DEFAULT NULL,
+  `readed` bigint DEFAULT NULL,
+  `writed` bigint DEFAULT NULL,
+  `count` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `count_UNIQUE` (`count`)
+) ENGINE=InnoDB AUTO_INCREMENT=283 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE IF NOT EXISTS `FileMsg` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `host` varchar(45) NOT NULL,
+  `dir_name` varchar(45) DEFAULT NULL,
+  `total_size` bigint DEFAULT NULL,
+  `free_size` bigint DEFAULT NULL,
+  `usage_size` bigint DEFAULT NULL,
+  `count` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `count_UNIQUE` (`count`)
+) ENGINE=InnoDB AUTO_INCREMENT=703 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE IF NOT EXISTS `Meo` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `host` varchar(45) NOT NULL,
+  `phy_available` varchar(45) DEFAULT NULL,
+  `vir_inuse` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `host_UNIQUE` (`host`)
+) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 
-                                       `start_time` DATETIME NOT NULL,
-                                       `last_time` DATETIME NOT NULL,
-                                       PRIMARY KEY ( `hostname` )
-)ENGINE=InnoDB DEFAULT CHARSET=utf8
+CREATE TABLE IF NOT EXISTS `NetWork` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `host` varchar(45) NOT NULL,
+  `net_name` varchar(45) DEFAULT NULL,
+  `mac_add` varchar(45) DEFAULT NULL,
+  `byt_rec` bigint DEFAULT NULL,
+  `byt_sen` bigint DEFAULT NULL,
+  `pac_rec` bigint DEFAULT NULL,
+  `pac_sen` bigint DEFAULT NULL,
+  `speed` bigint DEFAULT NULL,
+  `indrops` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `host_UNIQUE` (`host`)
+) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE IF NOT EXISTS `User` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(60) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_name_UNIQUE` (`user_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
