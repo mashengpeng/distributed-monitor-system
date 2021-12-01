@@ -1,7 +1,7 @@
 package com.example.dsserver;
 
-import com.example.dsserver.net.NettyServer;
-import com.example.dsserver.net.ServiceRegist;
+import com.example.dsserver.net.NettyServer.NettyServer;
+import com.example.dsserver.net.ServiceRegist.ServiceRegist;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;

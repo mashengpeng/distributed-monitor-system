@@ -1,4 +1,4 @@
-package com.example.dsclient.net;
+package com.example.dsclient.net.NettyClient;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;

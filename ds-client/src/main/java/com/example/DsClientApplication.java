@@ -1,7 +1,7 @@
 package com.example;
 
-import com.example.dsclient.net.NettyClient;
-import com.example.dsclient.net.QueryServer;
+import com.example.dsclient.net.NettyClient.NettyClient;
+import com.example.dsclient.net.QueryServer.QueryServer;
 import com.example.dsclient.net.ServerPort;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

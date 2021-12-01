@@ -1,4 +1,4 @@
-package com.example.dsserver.net;
+package com.example.dsserver.net.ServiceRegist;
 
 import com.alibaba.fastjson.JSON;
 import com.example.dsgeneral.data.Carrier;

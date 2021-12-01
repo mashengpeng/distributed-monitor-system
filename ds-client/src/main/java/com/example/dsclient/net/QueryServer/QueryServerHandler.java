@@ -1,6 +1,7 @@
-package com.example.dsclient.net;
+package com.example.dsclient.net.QueryServer;
 
 import com.alibaba.fastjson.JSON;
+import com.example.dsclient.net.ServerPort;
 import com.example.dsgeneral.data.Carrier;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;

@@ -1,4 +1,4 @@
-package com.example.dsclient.net;
+package com.example.dsclient.net.NettyClient;
 
 import com.alibaba.fastjson.JSON;
 import com.example.dsclient.utils.OshiUtil;

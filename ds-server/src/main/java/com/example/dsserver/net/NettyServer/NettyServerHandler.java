@@ -1,4 +1,4 @@
-package com.example.dsserver.net;
+package com.example.dsserver.net.NettyServer;
 
 import com.alibaba.fastjson.JSON;
 import com.example.dsgeneral.data.OfflineMes;
@@ -13,6 +13,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import javax.annotation.Resource;
 
 /**
  * @author Administrator
@@ -33,9 +36,14 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     @Autowired
     OfflineClientDao offlineClientDao;
 
+    @Autowired
+    RestTemplate restTemplate;
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         log.info("接受到一个客户端连接");
+        String message = "有新client上线了";
+        restTemplate.postForEntity("http://localhost:80/wsapi", message, String.class);
     }
 
     @Override
@@ -48,6 +56,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         offlineMes.setOsName(sumData.getClientMes().getOsName());
         offlineClientDao.insertOrUpdateOfflineMes(offlineMes);
 
+        String message = "client:" + sumData.getClientMes().getHost() + "下线了";
+        restTemplate.postForEntity("http://localhost:80/wsapi", message, String.class);
     }
 
     /**
