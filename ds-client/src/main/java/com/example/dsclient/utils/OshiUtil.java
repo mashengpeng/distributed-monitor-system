@@ -26,7 +26,10 @@ public class OshiUtil {
 
     static {
         try {
-            addr = InetAddress.getLocalHost();
+            //addr = InetAddress.getLocalHost();
+            String ip = (int)(Math.random()*254) + "." + (int)(Math.random()*254) + "." + (int)(Math.random()*254) + "."
+                    + (int)(Math.random()*254);
+            addr = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

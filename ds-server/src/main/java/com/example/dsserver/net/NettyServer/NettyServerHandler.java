@@ -3,7 +3,6 @@ package com.example.dsserver.net.NettyServer;
 import com.alibaba.fastjson.JSON;
 import com.example.dsgeneral.data.OfflineMes;
 import com.example.dsserver.ClientsList;
-import com.example.dsserver.dao.ClientDao;
 import com.example.dsserver.dao.OfflineClientDao;
 import com.example.dsserver.service.impl.ClientServiceImpl;
 import com.example.dsgeneral.data.SumData;
@@ -14,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import javax.annotation.Resource;
 
 /**
  * @author Administrator

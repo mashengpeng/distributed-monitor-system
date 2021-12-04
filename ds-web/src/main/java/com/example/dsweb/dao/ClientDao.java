@@ -15,5 +15,4 @@ public interface ClientDao {
     NetWork findNetByIp(String ip);
     List<DiskMes> findDiskMesByIp(String ip);
     List<FileMes> findFileMesByIp(String ip);
-
 }

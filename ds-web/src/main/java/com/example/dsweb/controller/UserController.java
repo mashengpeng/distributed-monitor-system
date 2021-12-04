@@ -10,6 +10,7 @@ import com.example.dsweb.utils.UserLoginUtils;
 import com.example.dsweb.vo.req.UserLoginPwdReqVO;
 import com.example.dsweb.vo.req.UserNameValidate;
 import com.example.dsweb.vo.res.UserLoginResVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 
 @CrossOrigin
 @RestController
+@Slf4j
 public class UserController {
 
     @Resource
@@ -36,6 +38,7 @@ public class UserController {
     @PostMapping("/login")
     public BaseResVO login(@Valid @RequestBody UserLoginPwdReqVO userLoginPwdReqVO,
                            BindingResult bindingResult) {
+        log.info("login");
         if (bindingResult.hasErrors()) {
             return ResultVOUtils.error(ResultEnum.PARAM_VERIFY_FALL, bindingResult.getFieldError().getDefaultMessage());
         }
@@ -66,6 +69,7 @@ public class UserController {
     @PostMapping("/validate")
     public BaseResVO validate(@Valid @RequestBody UserNameValidate userNameValidate,
                             BindingResult bindingResult) {
+        log.info("validate");
         if (bindingResult.hasErrors()) {
             return ResultVOUtils.error(ResultEnum.PARAM_VERIFY_FALL, bindingResult.getFieldError().getDefaultMessage());
         }
@@ -87,6 +91,7 @@ public class UserController {
     @PostMapping("/regist")
     public BaseResVO regist(@Valid @RequestBody UserLoginPwdReqVO userLoginPwdReqVO,
                            BindingResult bindingResult) {
+        log.info("regist");
         if (bindingResult.hasErrors()) {
             return ResultVOUtils.error(ResultEnum.PARAM_VERIFY_FALL, bindingResult.getFieldError().getDefaultMessage());
         }

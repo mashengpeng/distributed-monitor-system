@@ -70,4 +70,6 @@
         <result property="bytesSent" column="byt_sen"/>
         <result property="speed" column="speed"/>
     </resultMap>
+
+
 </mapper>
