@@ -10,6 +10,8 @@ import java.util.List;
 @Mapper
 public interface OfflineDao {
 
+    int getOfflineCount();
+
     List<OfflineMes> findAllOfflineByLimit(Integer currIndex, Integer pageSize);
 
     OfflineMes findOfflineByIp(String ip);

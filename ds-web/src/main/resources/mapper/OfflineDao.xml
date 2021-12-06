@@ -5,6 +5,9 @@
 
 <mapper namespace="com.example.dsweb.dao.OfflineDao">
 
+    <select id="getOfflineCount"  resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM OfflineMes
+    </select>
 
     <select id="findAllOfflineByLimit" resultMap="offlineMap">
         SELECT * FROM OfflineMes limit #{currIndex},#{pageSize}

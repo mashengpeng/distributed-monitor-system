@@ -12,13 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @Slf4j
 public class OfflineController {
@@ -26,8 +25,15 @@ public class OfflineController {
     @Autowired
     OfflineDao offlineDao;
 
+
+    @GetMapping("/offline/size")
+    public BaseResVO getOfflineCount() {
+        int count = offlineDao.getOfflineCount();
+        return ResultVOUtils.success(count);
+    }
+
     /**
-     * offlinetable连表查询
+     * offlinetable查询
      *
      * @param clientTableReqVO
      * @return
