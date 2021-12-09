@@ -1,41 +1,58 @@
 package com.example.dsclient.net.NettyClient;
 
-import com.example.dsclient.net.ServerPort;
+import com.example.dsclient.net.QueryServer.QueryServer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import java.net.InetSocketAddress;
 
 
 @Component
 public class NettyClient {
 
-    @Autowired
-    ServerPort serverPort;
-
     private EventLoopGroup group = new NioEventLoopGroup();
 
-    public void start() {
+    @Autowired
+    NettyClientHandler nettyClientHandler;
+
+
+    public void start(InetSocketAddress inetSocketAddress) throws InterruptedException {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 //该参数的作用就是禁止使用Nagle算法，使用于小数据即时传输
                 .option(ChannelOption.TCP_NODELAY, true)
-                .remoteAddress(serverPort.getInetSocketAddress())
+                .remoteAddress(inetSocketAddress)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .handler(new NettyClientInitializer());
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel p) throws Exception {
+                        p.pipeline().addLast("decoder", new StringDecoder());
+                        p.pipeline().addLast("encoder", new StringEncoder());
+                        p.pipeline().addLast(nettyClientHandler);
+                    }
+                });
 
         try {
             ChannelFuture future = bootstrap.connect().sync();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }finally {
-            group.shutdownGracefully();
         }
+//        finally {
+//            Thread.sleep(5000);
+//            group.shutdownGracefully();
+//        }
     }
 }

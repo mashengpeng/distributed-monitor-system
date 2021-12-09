@@ -29,7 +29,13 @@ public class NettyServer {
     //new 一个工作线程组
     private EventLoopGroup workGroup = new NioEventLoopGroup();
 
-    public void start(int port) {
+    int port;
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void start() {
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workGroup)
                 .channel(NioServerSocketChannel.class)

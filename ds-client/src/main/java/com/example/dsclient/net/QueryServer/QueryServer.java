@@ -1,5 +1,6 @@
 package com.example.dsclient.net.QueryServer;
 
+import com.example.dsclient.net.NettyClient.NettyClient;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -12,6 +13,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 
@@ -22,7 +24,7 @@ public class QueryServer {
     @Autowired
     QueryServerHandler queryServerHandler;
 
-    public void start() {
+    public void start() throws InterruptedException {
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap()
                 .group(group)
@@ -38,13 +40,23 @@ public class QueryServer {
                     }
                 });
 
+        ChannelFuture connect = null;
         try {
-            ChannelFuture future = bootstrap.connect("127.0.0.1", 20000).sync();
-            future.channel().closeFuture().sync();
+            connect = bootstrap
+                    .connect("127.0.0.1", 20000)
+                    .addListener(new ConnectionListener(this))// netty 启动时如果连接失败，会断线重连
+                    .sync();
+            // 关闭客户端
+            connect.channel()
+                    .closeFuture()
+                    .sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
+            Thread.sleep(5000);
             group.shutdownGracefully();
         }
+
+
     }
 }

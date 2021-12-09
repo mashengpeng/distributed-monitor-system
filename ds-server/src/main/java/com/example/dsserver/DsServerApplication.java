@@ -16,21 +16,34 @@ public class DsServerApplication {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(DsServerApplication.class, args);
 
         int port = (int) (Math.random()*10000) + 10001;
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
-        scheduledExecutorService.schedule(new Runnable() {
-            @Override
-            public void run() {
-                NettyServer nettyServer = applicationContext.getBean(NettyServer.class);
-                nettyServer.start(port);
-            }
-        }, 0, TimeUnit.SECONDS);
-        scheduledExecutorService.schedule(new Runnable() {
-            @Override
-            public void run() {
-                ServiceRegist serviceRegist = applicationContext.getBean(ServiceRegist.class);
-                serviceRegist.start(port);
-            }
-        }, 0, TimeUnit.SECONDS);
+
+        ServiceRegist serviceRegist = applicationContext.getBean(ServiceRegist.class);
+        serviceRegist.setPort(port);
+        serviceRegist.start();
+
+        NettyServer nettyServer = applicationContext.getBean(NettyServer.class);
+        nettyServer.setPort(port);
+        nettyServer.start();
+
+
+
+//        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
+//        scheduledExecutorService.schedule(new Runnable() {
+//            @Override
+//            public void run() {
+//                NettyServer nettyServer = applicationContext.getBean(NettyServer.class);
+//                nettyServer.setPort(port);
+//                nettyServer.start();
+//            }
+//        }, 0, TimeUnit.SECONDS);
+//        scheduledExecutorService.schedule(new Runnable() {
+//            @Override
+//            public void run() {
+//                ServiceRegist serviceRegist = applicationContext.getBean(ServiceRegist.class);
+//                serviceRegist.setPort(port);
+//                serviceRegist.start();
+//            }
+//        }, 0, TimeUnit.SECONDS);
     }
 
 }

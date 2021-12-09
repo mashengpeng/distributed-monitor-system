@@ -44,7 +44,7 @@ public class NettyRegistHandler extends ChannelInboundHandlerAdapter {
             log.info("添加了一个服务器地址，地址为："+inetSocketAddress.toString());
         }else if(carrier.info.containsKey("Which server should i report to?")){
             ctx.writeAndFlush(JSON.toJSONString(serverAddress.getAddress()));
-            log.info("向客户端返回了一个服务器地址，地址为："+serverAddress.getAddress().toString());
+            log.info("向客户端返回了一个服务器地址，地址为："+serverAddress.getAddress());
         }
     }
 

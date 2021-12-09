@@ -74,7 +74,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         clientsList.m.put(ctx.channel().hashCode(), sumData);
         offlineClientDao.deleteByHost(sumData.getClientMes().getHost());
 
-        ctx.writeAndFlush("已收到" + ctx.channel().hashCode());
+        ctx.writeAndFlush("已收到，消息处理channel的hashcode为：" + ctx.channel().hashCode());
     }
 
     /**

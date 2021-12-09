@@ -11,6 +11,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
@@ -19,7 +20,16 @@ import java.net.InetSocketAddress;
 @Component
 public class ServiceRegist {
 
-    public void start(int port){
+    int port;
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    @Autowired
+    ServiceRegistHandler serviceRegistHandler;
+
+    public void start(){
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap()
@@ -32,22 +42,21 @@ public class ServiceRegist {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline().addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
                             socketChannel.pipeline().addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
-                            socketChannel.pipeline().addLast(new ChannelInboundHandlerAdapter());
+                            socketChannel.pipeline().addLast(serviceRegistHandler);
                         }
                     });
-            log.info("连接到注册中心");
-            ChannelFuture channelFuture = bootstrap.connect(new InetSocketAddress("127.0.0.1", 20000));
-            Thread.sleep(3 * 1000);
 
-            Carrier carrier = new Carrier();
-            carrier.info.put("server address", new InetSocketAddress("127.0.0.1", port));
-            log.info("发送本地地址到注册中心");
-            channelFuture.channel().writeAndFlush(JSON.toJSONString(carrier));
+            ChannelFuture channelFuture = bootstrap
+                    .connect(new InetSocketAddress("127.0.0.1", 20000))
+                    .addListener(new ConnectionListener(this))
+                    .sync();
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            group.shutdownGracefully();
         }
+//        finally {
+//
+//            group.shutdownGracefully();
+//        }
     }
 }
