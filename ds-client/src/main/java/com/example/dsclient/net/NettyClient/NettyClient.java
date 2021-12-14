@@ -11,6 +11,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.net.InetSocketAddress;
 
 
 @Component
+@Slf4j
 public class NettyClient {
 
     private EventLoopGroup group = new NioEventLoopGroup();
@@ -32,7 +34,7 @@ public class NettyClient {
         bootstrap.group(group)
                 //该参数的作用就是禁止使用Nagle算法，使用于小数据即时传输
                 .option(ChannelOption.TCP_NODELAY, true)
-                .remoteAddress(inetSocketAddress)
+//                .remoteAddress(inetSocketAddress)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .handler(new ChannelInitializer<SocketChannel>() {
@@ -45,7 +47,8 @@ public class NettyClient {
                 });
 
         try {
-            ChannelFuture future = bootstrap.connect().sync();
+            log.info("开始连接server");
+            ChannelFuture future = bootstrap.connect(inetSocketAddress).sync();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();

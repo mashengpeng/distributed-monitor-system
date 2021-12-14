@@ -15,35 +15,35 @@ public class DsServerApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(DsServerApplication.class, args);
 
-        int port = (int) (Math.random()*10000) + 10001;
+        int port = (int) (Math.random()*10000) + 50001;
 
-        ServiceRegist serviceRegist = applicationContext.getBean(ServiceRegist.class);
-        serviceRegist.setPort(port);
-        serviceRegist.start();
+//        ServiceRegist serviceRegist = applicationContext.getBean(ServiceRegist.class);
+//        serviceRegist.setPort(port);
+//        serviceRegist.start();
+//
+//        NettyServer nettyServer = applicationContext.getBean(NettyServer.class);
+//        nettyServer.setPort(port);
+//        nettyServer.start();
 
-        NettyServer nettyServer = applicationContext.getBean(NettyServer.class);
-        nettyServer.setPort(port);
-        nettyServer.start();
 
 
-
-//        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
-//        scheduledExecutorService.schedule(new Runnable() {
-//            @Override
-//            public void run() {
-//                NettyServer nettyServer = applicationContext.getBean(NettyServer.class);
-//                nettyServer.setPort(port);
-//                nettyServer.start();
-//            }
-//        }, 0, TimeUnit.SECONDS);
-//        scheduledExecutorService.schedule(new Runnable() {
-//            @Override
-//            public void run() {
-//                ServiceRegist serviceRegist = applicationContext.getBean(ServiceRegist.class);
-//                serviceRegist.setPort(port);
-//                serviceRegist.start();
-//            }
-//        }, 0, TimeUnit.SECONDS);
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
+        scheduledExecutorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                NettyServer nettyServer = applicationContext.getBean(NettyServer.class);
+                nettyServer.setPort(port);
+                nettyServer.start();
+            }
+        }, 0, TimeUnit.SECONDS);
+        scheduledExecutorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                ServiceRegist serviceRegist = applicationContext.getBean(ServiceRegist.class);
+                serviceRegist.setPort(port);
+                serviceRegist.start();
+            }
+        }, 0, TimeUnit.SECONDS);
     }
 
 }
