@@ -41,10 +41,10 @@ public class NettyRegistHandler extends ChannelInboundHandlerAdapter {
             InetSocketAddress inetSocketAddress = JSON.parseObject(carrier.info.get("server address").toString(), InetSocketAddress.class);
             serverAddress.addAddress(ctx.channel().hashCode(), inetSocketAddress);
             ctx.writeAndFlush("服务器地址已添加");
-            log.info("添加了一个服务器地址，地址为："+inetSocketAddress.toString());
+            log.info("添加了一个server地址，地址为："+inetSocketAddress.toString());
         }else if(carrier.info.containsKey("Which server should i report to?")){
             ctx.writeAndFlush(JSON.toJSONString(serverAddress.getAddress()));
-            log.info("向客户端返回了一个服务器地址，地址为："+serverAddress.getAddress());
+            log.info("向client返回了一个server地址，地址为："+serverAddress.getAddress());
         }
     }
 

@@ -9,10 +9,14 @@ import com.example.dsgeneral.data.SumData;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.EventLoop;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Administrator
@@ -38,23 +42,37 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("接受到一个客户端连接");
+        log.info("接受到一个client连接");
         String message = "有新client上线了";
-        restTemplate.postForEntity("http://localhost:80/wsapi", message, String.class);
+        ctx.channel().eventLoop().execute(new Runnable() {
+            @Override
+            public void run() {
+                restTemplate.postForEntity("http://localhost:80/wsapi", message, String.class);
+            }
+        });
+
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        SumData sumData = clientsList.m.get(ctx.channel().hashCode());
-        OfflineMes offlineMes = new OfflineMes();
-        offlineMes.setHost(sumData.getClientMes().getHost());
-        offlineMes.setLastOnlineTime(sumData.getClientMes().getTime());
-        offlineMes.setOsName(sumData.getClientMes().getOsName());
-        offlineClientDao.insertOrUpdateOfflineMes(offlineMes);
 
-        String message = "client:" + sumData.getClientMes().getHost() + "下线了";
-        restTemplate.postForEntity("http://localhost:80/wsapi", message, String.class);
+        ctx.channel().eventLoop().execute(new Runnable() {
+            @Override
+            public void run() {
+                SumData sumData = clientsList.m.get(ctx.channel().hashCode());
+                OfflineMes offlineMes = new OfflineMes();
+                offlineMes.setHost(sumData.getClientMes().getHost());
+                offlineMes.setLastOnlineTime(sumData.getClientMes().getTime());
+                offlineMes.setOsName(sumData.getClientMes().getOsName());
+                offlineClientDao.insertOrUpdateOfflineMes(offlineMes);
+
+                String message = "client:" + sumData.getClientMes().getHost() + "下线了";
+                restTemplate.postForEntity("http://localhost:80/wsapi", message, String.class);
+            }
+        });
+
+
     }
 
     /**
@@ -62,17 +80,28 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("服务器收到消息: " + msg);
-        SumData sumData = JSON.parseObject((String)msg, SumData.class);
-        clientService.insertOrUpdateClientMsg(sumData.getClientMes());
-        clientService.insertOrUpdateCpu(sumData.getCpu());
-        clientService.insertOrUpdateDiskMsg(sumData.getDiskMes());
-        clientService.insertOrUpdateFileMsg(sumData.getFileMes());
-        clientService.insertOrUpdateMeo(sumData.getMeo());
-        clientService.insertOrUpdateNet(sumData.getNetWork());
 
-        clientsList.m.put(ctx.channel().hashCode(), sumData);
-        offlineClientDao.deleteByHost(sumData.getClientMes().getHost());
+        SumData sumData = JSON.parseObject((String)msg, SumData.class);
+        log.info("server收到" + sumData.getClientMes().getHost() + "发送的报告");
+
+        final EventLoop loop = ctx.channel().eventLoop();
+        loop.execute(new Runnable() {
+            @SneakyThrows
+            @Override
+            public void run() {
+                clientService.insertOrUpdateClientMsg(sumData.getClientMes());
+                clientService.insertOrUpdateCpu(sumData.getCpu());
+                clientService.insertOrUpdateDiskMsg(sumData.getDiskMes());
+                clientService.insertOrUpdateFileMsg(sumData.getFileMes());
+                clientService.insertOrUpdateMeo(sumData.getMeo());
+                clientService.insertOrUpdateNet(sumData.getNetWork());
+
+                clientsList.m.put(ctx.channel().hashCode(), sumData);
+                offlineClientDao.deleteByHost(sumData.getClientMes().getHost());
+            }
+        });
+
+
 
         ctx.writeAndFlush("已收到，消息处理channel的hashcode为：" + ctx.channel().hashCode());
     }

@@ -50,7 +50,7 @@ public class NettyServer {
         //绑定端口,开始接收进来的连接
         try {
             ChannelFuture future = bootstrap.bind().sync();
-            log.info("服务器启动开始,监听端口："+port);
+            log.info("server启动开始,监听端口："+port);
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();

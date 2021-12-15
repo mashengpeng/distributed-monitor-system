@@ -22,7 +22,7 @@ public class ConnectionListener implements ChannelFutureListener {
     @Override
     public void operationComplete(ChannelFuture channelFuture) throws Exception {
         if (!channelFuture.isSuccess()) {
-            log.warn("未连接到注册中心，3s后尝试重新连接");
+            log.warn("未连接到register，3s后尝试重新连接");
             final EventLoop loop = channelFuture.channel().eventLoop();
             loop.schedule(new Runnable() {
                 @SneakyThrows

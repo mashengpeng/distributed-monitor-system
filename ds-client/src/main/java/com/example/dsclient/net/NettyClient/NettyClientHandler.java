@@ -37,7 +37,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("已连接到服务器");
+        log.info("已连接到server");
 
         scheduledExecutorService = Executors.newScheduledThreadPool(3);
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
@@ -59,28 +59,28 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
                 log.info("已发送数据，当前时间：" + LocalDateTime.now());
                 ctx.writeAndFlush(JSON.toJSONString(sumData));
             }
-        },1,5,TimeUnit.SECONDS);
+        },0,5,TimeUnit.SECONDS);
 
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("客户端收到消息: {}", msg);
+        log.info("server已成功收到报告");
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
+
         scheduledExecutorService.shutdown();
 
-        final EventLoop loop = ctx.channel().eventLoop();
-        loop.schedule(new Runnable() {
+        ctx.channel().eventLoop().execute(new Runnable() {
             @SneakyThrows
             @Override
             public void run() {
                 queryServer.start();
             }
-        }, 0L, TimeUnit.SECONDS);
+        });
 
     }
 

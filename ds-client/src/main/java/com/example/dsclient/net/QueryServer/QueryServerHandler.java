@@ -35,7 +35,7 @@ public class QueryServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("已连接到注册中心");
+        log.info("已连接到register");
         Thread.sleep(1000);
 
         query(ctx);
@@ -61,19 +61,18 @@ public class QueryServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         InetSocketAddress inetSocketAddress = JSON.parseObject((String) msg, InetSocketAddress.class);
         if(inetSocketAddress == null){
-            log.info("未查到服务器地址，3s后继续查询");
+            log.info("未查到server地址，3s后继续查询");
             Thread.sleep(3000);
             query(ctx);
         }else{
-            log.info("查询到服务器地址为：" + inetSocketAddress);
-            final EventLoop loop = ctx.channel().eventLoop();
-            loop.schedule(new Runnable() {
+            log.info("查询到server地址为：" + inetSocketAddress);
+            ctx.channel().eventLoop().execute(new Runnable() {
                 @SneakyThrows
                 @Override
                 public void run() {
                     nettyClient.start(inetSocketAddress);
                 }
-            }, 0L, TimeUnit.SECONDS);
+            });
 
             Thread.sleep(3000);
             ctx.close();

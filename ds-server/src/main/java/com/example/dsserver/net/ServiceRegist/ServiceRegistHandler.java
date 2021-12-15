@@ -25,14 +25,14 @@ public class ServiceRegistHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("已连接到注册中心");
+        log.info("已连接到register");
 
         Thread.sleep(3000);
         Carrier carrier = new Carrier();
         carrier.info.put("server address", new InetSocketAddress("127.0.0.1", serviceRegist.port));
         ctx.writeAndFlush(JSON.toJSONString(carrier));
 
-        log.info("发送本地地址到注册中心");
+        log.info("发送本地地址到register");
 
         super.channelActive(ctx);
     }
@@ -40,14 +40,13 @@ public class ServiceRegistHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        final EventLoop loop = ctx.channel().eventLoop();
-        loop.schedule(new Runnable() {
+        ctx.channel().eventLoop().execute(new Runnable() {
             @SneakyThrows
             @Override
             public void run() {
                 serviceRegist.start();
             }
-        }, 0L, TimeUnit.SECONDS);
+        });
     }
 
     @Override
